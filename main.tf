@@ -1,5 +1,5 @@
 module "static_asset_bucket" {
-  source = "../terraform-private-s3-bucket"
+  source = "git@github.com:jk563/terraform-private-s3-bucket"
 
   bucket_name = local.bucket_name
 }
@@ -9,7 +9,7 @@ module "subdomain_cert" {
     aws = aws.us-east-1
   }
 
-  source = "../terraform-acm-certificate"
+  source = "git@github.com:jk563/terraform-acm-certificate"
 
   fqdn           = var.fqdn
   hosted_zone_id = var.hosted_zone_id
