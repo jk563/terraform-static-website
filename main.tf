@@ -2,6 +2,8 @@ module "static_asset_bucket" {
   source = "git@github.com:jk563/terraform-private-s3-bucket"
 
   bucket_name = local.bucket_name
+
+  force_destroy = var.force_destroy
 }
 
 module "subdomain_cert" {
