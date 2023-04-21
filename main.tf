@@ -62,7 +62,7 @@ resource "aws_cloudfront_distribution" "main" {
 }
 
 resource "aws_cloudfront_origin_access_control" "main" {
-  name                              = "${var.bucket_name}-oac"
+  name                              = "${local.bucket_name}-oac"
   description                       = "S3 OAC"
   origin_access_control_origin_type = "s3"
   signing_behavior                  = "always"
