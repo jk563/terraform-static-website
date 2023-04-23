@@ -2,7 +2,6 @@ module "static_asset_bucket" {
   source = "git@github.com:jk563/terraform-private-s3-bucket"
 
   bucket_name = local.bucket_name
-
   force_destroy = var.force_destroy
 }
 
@@ -14,7 +13,10 @@ module "subdomain_cert" {
   source = "git@github.com:jk563/terraform-acm-certificate"
 
   fqdn           = var.fqdn
-  hosted_zone_id = var.hosted_zone_id
+}
+
+data "aws_route53_zone" "parent" {
+  name = local.parent_zone
 }
 
 resource "aws_cloudfront_distribution" "main" {
@@ -95,7 +97,7 @@ data "aws_iam_policy_document" "allow_cloudfront" {
 }
 
 resource "aws_route53_record" "main" {
-  zone_id = var.hosted_zone_id
+  zone_id = data.aws_route53_zone.parent.id
   name    = var.fqdn
   type    = "A"
 
