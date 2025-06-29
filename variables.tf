@@ -15,3 +15,9 @@ variable "force_destroy" {
   default = false
   description = "Used to empty and destroy the S3 bucket"
 }
+
+variable "api_gateway_origin_domain" {
+  type        = string
+  default     = ""
+  description = "API Gateway origin domain for /api/* routing"
+}

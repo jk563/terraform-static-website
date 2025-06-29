@@ -26,6 +26,22 @@ resource "aws_cloudfront_distribution" "main" {
     origin_access_control_id = aws_cloudfront_origin_access_control.main.id
   }
 
+  # Conditional API Gateway origin
+  dynamic "origin" {
+    for_each = var.api_gateway_origin_domain != "" ? [1] : []
+    content {
+      domain_name = var.api_gateway_origin_domain
+      origin_id   = "APIGateway"
+      
+      custom_origin_config {
+        http_port              = 80
+        https_port             = 443
+        origin_protocol_policy = "https-only"
+        origin_ssl_protocols   = ["TLSv1.2"]
+      }
+    }
+  }
+
   # By default, show index.html file
   default_root_object = "index.html"
   enabled             = true
@@ -46,6 +62,31 @@ resource "aws_cloudfront_distribution" "main" {
       }
     }
     viewer_protocol_policy = "redirect-to-https"
+  }
+
+  # API Gateway cache behavior for /api/* paths
+  dynamic "ordered_cache_behavior" {
+    for_each = var.api_gateway_origin_domain != "" ? [1] : []
+    content {
+      path_pattern     = "/api/*"
+      allowed_methods  = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
+      cached_methods   = ["GET", "HEAD"]
+      target_origin_id = "APIGateway"
+      compress         = true
+
+      forwarded_values {
+        query_string = true
+        headers      = ["*"]
+        cookies {
+          forward = "all"
+        }
+      }
+
+      viewer_protocol_policy = "redirect-to-https"
+      min_ttl                = 0
+      default_ttl            = 0
+      max_ttl                = 0
+    }
   }
 
   # Distributes content to US and Europe
