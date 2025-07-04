@@ -21,3 +21,9 @@ variable "api_gateway_origin_domain" {
   default     = ""
   description = "API Gateway origin domain for /api/* routing"
 }
+
+variable "api_gateway_origin_path" {
+  type        = string
+  default     = ""
+  description = "API Gateway origin path prefix (e.g., /dev for stage)"
+}
